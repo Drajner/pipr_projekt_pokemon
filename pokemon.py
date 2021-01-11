@@ -18,14 +18,6 @@ class Player:
         self._pokemons = []
         for name in pokemon_names:
             self._pokemons.append(Pokemon(all_data, name))
-        """
-        self.pokemon1 = Pokemon(all_data, pokemon_name1)
-        self.pokemon2 = Pokemon(all_data, pokemon_name2)
-        self.pokemon3 = Pokemon(all_data, pokemon_name3)
-        self.pokemon4 = Pokemon(all_data, pokemon_name4)
-        self.pokemon5 = Pokemon(all_data, pokemon_name5)
-        self.pokemon6 = Pokemon(all_data, pokemon_name6)
-        """
         self.current_pokemon = None
         self._enemy = None
     """
@@ -68,13 +60,14 @@ class Player:
                 some_pokemon_is_alive = True
         return some_pokemon_is_alive
     """
-    choose_action - chooses action basing on the numbers given by the Interface
+    choose_action - (UNUSED) chooses action basing on the numbers given by the Interface
     attributes:
         action_number - main number necessary for choice of action (int 1-4)
         pokemon_number - number needed only for action 4 to change pokemon (int 1-6)
         use_target_type - number needed only for action 2 to attack on certain type (int 1-2)
     returns 0 if none of the actions have been chosen
     """
+
     def choose_action(self, action_number, pokemon_number=None, use_target_type=None):
 
         if action_number == 1:
@@ -91,33 +84,14 @@ class Player:
     """
     change_current - chooses another pokemon with pokemon_number to take part in fight
     return is not necessary, but is a base of responses from the interface if action dictated by the player can't be made
-    0 means that the change of pokemon is pointless
     1 means that pokemon with this number does not exist
     2 means that pokemon of this number is dead
     3 means that choice went smoothly
     """
     def change_current(self, pokemon_number):
         pokemon_wanted = self.pokemon(pokemon_number)
-        """
-        if pokemon_number == 1:
-            pokemon_wanted = self._pokemon1
-        elif pokemon_number == 2:
-            pokemon_wanted = self._pokemon2
-        elif pokemon_number == 3:
-            pokemon_wanted = self._pokemon3
-        elif pokemon_number == 4:
-            pokemon_wanted = self._pokemon4
-        elif pokemon_number == 5:
-            pokemon_wanted = self._pokemon5
-        elif pokemon_number == 6:
-            pokemon_wanted = self._pokemon6
-        else:
-            return 1
-        """
         if pokemon_wanted:
-            if self.current_pokemon == pokemon_wanted:
-                return 0
-            elif pokemon_wanted.is_dead():
+            if pokemon_wanted.is_dead():
                 return 2
             else:
                 self.current_pokemon = pokemon_wanted
@@ -212,7 +186,6 @@ class Pokemon:
             type_request = 'type' + str(use_target_type)
             against_type_modifier_name = 'against_' + target.pok_data(type_request)
             modifier *= float(self.pok_data(against_type_modifier_name))
-        #damage = 2.4 * float(self.pok_data('attack')) / float(target.current_defense()) / 50.0 * modifier
         damage = 2.4 * float(self.pok_data('attack')) * modifier / float(target.current_defense())
         target.take_damage(damage)
     """
@@ -244,7 +217,10 @@ class Game:
         self.player2 = Player(self.all_data, name, player_pokemons)
         self.player1.set_enemy(self.player2)
         self.player2.set_enemy(self.player1)
-        self.duel()
+        if self.player1.pokemon_list() and self.player2.pokemon_list():
+            self.duel()
+        else:
+            print("One of the players did not choose team of pokemons so there is no sense in playing.")
     """
     player_creation - takes input from player to get data about them
     """
@@ -418,12 +394,7 @@ class Game:
             else:
                 print('Sorry I do not understand please try again')
 
-
-game = Game()
-"""
-def __main__():
-    game = Game()
-
 if __name__ == "__main__":
+    game = Game()
     pass
-"""
+
