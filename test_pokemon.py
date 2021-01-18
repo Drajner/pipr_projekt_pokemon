@@ -146,7 +146,7 @@ def test_pok_attack_special2(monkeypatch):
     assert poggers2.current_hp() == 8.8
 
 
-def test_pok_fuckin_dies():
+def test_pok_dies():
     poggers = Pokemon(all_data, 'Poggers')
     poggers.take_damage(16)
     assert poggers.current_hp() == 0
