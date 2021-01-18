@@ -1,7 +1,7 @@
 import csv
 import random
 
-POKEMON_MAX_NUMBER=6
+POKEMON_MAX_NUMBER = 6
 
 
 class Player:
@@ -211,6 +211,8 @@ class Game:
             for line in data_from_file:
                 self.all_data[line['name']] = line
             pass
+        print("Welcome to the game of Pokemon!")
+        print(' ')
         name, player_pokemons = self.player_creation()
         self.player1 = Player(self.all_data, name, player_pokemons)
         name, player_pokemons = self.player_creation()
@@ -225,7 +227,7 @@ class Game:
     player_creation - takes input from player to get data about them
     """
     def player_creation(self):
-        print('What is you name Player?')
+        print('What is your name, Player?')
         name = input()
         print('Hello ' + name + '!')
         choice_player_not_finished = True
@@ -256,9 +258,9 @@ class Game:
             print("These are your pokemon:")
             for i in range(len(player_pokemons)):
                 print(str(i+1) + '.' + player_pokemons[i])
-            print("Right? Y/N")
+            print("Right? Write 'n' or 'N' if you disagree or anything else if you agree.")
             answer = input()
-            if answer == 'N':
+            if answer == 'N' or answer == 'n':
                 print('OK lets start again')
             else:
                 print('I will count that as "yes". Lets move on!')
@@ -272,32 +274,35 @@ class Game:
         there_is_no_winner = True
         winner = None
         print('Lets start the fight!')
+        print(' ')
         self.choose_pokemon(self.player1)
         self.choose_pokemon(self.player2)
         while there_is_no_winner:
-            if self.player1.some_pokemons_alive():
-                if self.player1.current_pokemon.is_dead():
-                    print(str(self.player1) + ", your pokemon died!")
-                    self.choose_pokemon(self.player1)
-                else:
-                    self.turn(self.player1)
-            else:
-                print(str(self.player1) + ", last of your pokemons died!")
-                winner = self.player2
-                there_is_no_winner = False
+            winner == self.turn_part1(self.player1)
+            if winner:
                 break
-            if self.player2.some_pokemons_alive():
-                if self.player2.current_pokemon.is_dead():
-                    print(str(self.player2) + ", your pokemon died!")
-                    self.choose_pokemon(self.player2)
-                else:
-                    self.turn(self.player2)
-            else:
-                print(str(self.player2) + ", your pokemon died!")
-                winner = self.player1
-                there_is_no_winner = False
+            winner == self.turn_part1(self.player2)
+            if winner:
                 break
         print("The winner is " + str(winner))
+        print(' ')
+    """
+    turn_part1 - it is the first part of the players turn, which checks if the game should still be going on
+    """
+    def turn_part1(self, player):
+        if player.some_pokemons_alive():
+            if player.current_pokemon.is_dead():
+                print(str(player) + ", your pokemon died!")
+                print(' ')
+                self.choose_pokemon(player)
+            else:
+                self.turn_part2(player)
+        else:
+            print(str(player) + ", last of your pokemons died!")
+            print(' ')
+            winner = player.enemy()
+            return winner
+
     """
     choose_pokemon - allows player to change pokemon
     """
@@ -350,22 +355,23 @@ class Game:
             player.current_pokemon.attack(player.enemy().current_pokemon, 1)
 
     """
-    turn - module running single turn for player
+    turn_part2 - module running second part of the turn for player, which allows
     """
-    def turn(self, player):
+    def turn_part2(self, player):
         player_did_not_finish_his_turn = True
-        print(str(player) + ' turn')
         print(' ')
-        print("Your pokemon:")
+        print(str(player) + "'s turn")
+        print(' ')
+        print(str(player) + "'s pokemon:")
         print(str(player.current_pokemon))
-        print("HP: " + str(player.current_pokemon.current_hp()))
-        print("DEF: " + str(player.current_pokemon.current_defense()))
+        print("HP: " + str(round(player.current_pokemon.current_hp(), 2)))
+        print("DEF: " + str(round(player.current_pokemon.current_defense(), 2)))
         print("ATK: " + str(player.current_pokemon.pok_data('attack')))
         print(' ')
-        print("Enemy pokemon:")
+        print(str(player.enemy()) + "'s pokemon:")
         print(str(player.enemy().current_pokemon))
-        print("HP: " + str(player.enemy().current_pokemon.current_hp()))
-        print("DEF: " + str(player.enemy().current_pokemon.current_defense()))
+        print("HP: " + str(round(player.enemy().current_pokemon.current_hp(), 2)))
+        print("DEF: " + str(round(player.enemy().current_pokemon.current_defense(), 2)))
         print("ATK: " + str(player.enemy().current_pokemon.pok_data('attack')))
         print('')
         print('Please choose your action:')
@@ -394,7 +400,7 @@ class Game:
             else:
                 print('Sorry I do not understand please try again')
 
+
 if __name__ == "__main__":
     game = Game()
     pass
-
