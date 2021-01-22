@@ -272,36 +272,38 @@ class Game:
     """
     def duel(self):
         there_is_no_winner = True
-        winner = None
+        winner_player = None
         print('Lets start the fight!')
         print(' ')
         self.choose_pokemon(self.player1)
         self.choose_pokemon(self.player2)
         while there_is_no_winner:
-            winner == self.turn_part1(self.player1)
-            if winner:
+            if self.player1.some_pokemons_alive():
+                self.turn_part1(self.player1)
+            else:
+                print(str(self.player1) + ", last of your pokemons died!")
+                print(' ')
+                winner_player = self.player1.enemy()
                 break
-            winner == self.turn_part1(self.player2)
-            if winner:
+            if self.player2.some_pokemons_alive():
+                self.turn_part1(self.player2)
+            else:
+                print(str(self.player2) + ", last of your pokemons died!")
+                print(' ')
+                winner_player = self.player2.enemy()
                 break
-        print("The winner is " + str(winner))
+        print("The winner is " + str(winner_player))
         print(' ')
     """
     turn_part1 - it is the first part of the players turn, which checks if the game should still be going on
     """
     def turn_part1(self, player):
-        if player.some_pokemons_alive():
-            if player.current_pokemon.is_dead():
-                print(str(player) + ", your pokemon died!")
-                print(' ')
-                self.choose_pokemon(player)
-            else:
-                self.turn_part2(player)
-        else:
-            print(str(player) + ", last of your pokemons died!")
+        if player.current_pokemon.is_dead():
+            print(str(player) + ", your pokemon died!")
             print(' ')
-            winner = player.enemy()
-            return winner
+            self.choose_pokemon(player)
+        else:
+            self.turn_part2(player)
 
     """
     choose_pokemon - allows player to change pokemon
