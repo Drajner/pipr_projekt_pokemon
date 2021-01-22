@@ -1,5 +1,5 @@
 import pytest
-from pokemon import Pokemon, Player, Game
+from pokemon import Pokemon, Player
 
 all_data = {'Poggers': {
                         'against_bug': 2,
@@ -104,9 +104,33 @@ def test_none_pok_create():
     assert poggers.current_hp() is None
 
 
+def test_pok_name():
+    poggers = Pokemon(all_data, 'Poggers')
+    assert str(poggers) == 'Poggers'
+    poggers.take_damage(40.0)
+    assert str(poggers) == 'Dead'
+
+
+def test_pok_pok_data_not_used_parameter():
+    poggers = Pokemon(all_data, 'Poggers')
+    assert poggers.pok_data('is_legendary') == 0
+
+
+def test_pok_set_current_hp():
+    poggers = Pokemon(all_data, 'Poggers')
+    poggers.set_current_hp(7.0)
+    assert poggers.current_hp() == 7.0
+
+
 def test_pok_defend():
     poggers = Pokemon(all_data, 'Poggers')
     poggers.defend()
+    assert poggers.current_defense() == 11.0
+
+
+def test_pok_defend2():
+    poggers = Pokemon(all_data, 'Poggers')
+    poggers.set_current_defense(11.0)
     assert poggers.current_defense() == 11.0
 
 
@@ -153,6 +177,12 @@ def test_pok_dies():
     assert poggers.is_dead() is True
 
 
+def test_pok_dies2():
+    poggers = Pokemon(all_data, 'Poggers')
+    poggers.death()
+    assert poggers.is_dead() is True
+
+
 def test_player_creation():
     player1 = Player(all_data, "Jacek", ['Poggers', 'Froggers'])
     player2 = Player(all_data, "Andrzej", ['Froggers', 'Poggers'], player1)
@@ -180,3 +210,19 @@ def test_player_change_current1():
     assert player1.change_current(1) == 3
     assert player1.change_current(2) == 2
     assert player1.change_current(3) == 1
+
+
+def test_player_change_current2():
+    player1 = Player(all_data, "Jacek", ['Poggers', 'Froggers'])
+    player1.change_current(2)
+    assert player1.current_pokemon == player1.pokemon(2)
+    pass
+
+
+def test_player_pokemon_info():
+    player1 = Player(all_data, "Jacek", ['Poggers', 'Froggers'])
+    assert str(player1.pokemon(1)) == 'Poggers'
+    assert player1.pokemon(1).is_dead() is False
+    assert player1.pokemon(1).current_defense() == 10
+    assert player1.pokemon(1).current_hp() == 10
+    assert player1.pokemon(1).pok_data('against_fire') == 1
